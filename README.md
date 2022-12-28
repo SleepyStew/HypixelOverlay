@@ -2,4 +2,4 @@
 
 > Created by SleepyStew
 
-![](https://imgur.com/a/yfBGMrw)
+![](https://i.imgur.com/3sz3Kt9.png)
