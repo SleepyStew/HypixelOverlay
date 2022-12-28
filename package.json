@@ -12,7 +12,7 @@
   "keywords": [],
   "author": "SleepyStew <sleepystew3@gmail.com>",
   "license": "MIT",
-  "homepage": "https://github.com/michalzaq12/electron-nuxt/blob/master/README.md",
+  "homepage": "https://github.com/SleepyStew/HypixelOverlay",
   "engines": {
     "node": ">=14.14.9"
   },
