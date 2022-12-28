@@ -1,0 +1,163 @@
+<template>
+  <div class="flex items-center flex-col">
+    <div class="p-3 overflow-clip">
+      <div class="grid grid-cols-[12rem,6rem,12rem,6rem,6rem,10rem,8rem]">
+        <div class="text-xl font-semibold flex justify-center">
+          Name
+        </div>
+        <div class="text-xl font-semibold flex justify-center">
+          Wins
+        </div>
+        <div class="text-xl font-semibold flex justify-center">
+          Murderer Wins
+        </div>
+        <div class="text-xl font-semibold flex justify-center">
+          KDR
+        </div>
+        <div class="text-xl font-semibold flex justify-center">
+          Kills
+        </div>
+        <div class="text-xl font-semibold flex justify-center">
+          Detective Wins
+        </div>
+        <div class="text-xl font-semibold flex justify-center">
+          Deaths
+        </div>
+      </div>
+      <hr class="w-[100%]">
+      <Player v-for="player in playerlist" :name="player" :key="player" :owner="uuid"></Player>
+    </div>
+    <div v-if="invalid" class="flex p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 w-[80%] dark:text-red-800"
+         role="alert">
+      <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20"
+           xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+              clip-rule="evenodd"></path>
+      </svg>
+      <span class="sr-only">Info</span>
+      <div>
+        <span class="font-medium">Invalid Configuration!</span> {{ invalidMessage }}
+      </div>
+    </div>
+  </div>
+
+</template>
+
+<script>
+import Player from "~/components/Player.vue";
+import axios from "axios";
+
+const fileWatcher = require("chokidar");
+const fs = require('fs');
+
+export default {
+  name: 'IndexPage',
+  components: {Player},
+  data() {
+    return {
+      linecount: 0,
+      playerlist: [],
+      invalid: false,
+      invalidMessage: "Please edit your settings by clicking the icon in the top left.",
+      uuid: null,
+    }
+  },
+  methods: {
+    processNewLines(list) {
+      if (this.invalid)
+        return
+      for (let i = 0; i < list.length; i++) {
+        if (list[i].startsWith("ONLINE: ")) {
+          this.playerlist = list[i].split("ONLINE: ")[1].split(", ");
+          this.removeDuplicates();
+        }
+        if (list[i].includes(":")) {
+          continue;
+        }
+        if (list[i].startsWith("Sending you to mini")) {
+          this.playerlist = [];
+        }
+        if (list[i].includes(" has joined (")) {
+          this.playerlist.push(list[i].split(" has joined (")[0]);
+          this.removeDuplicates();
+        }
+        if (list[i].includes(" has quit!")) {
+          this.playerlist.splice(this.playerlist.indexOf(list[i].split(" has quit!")[0]), 1);
+          this.removeDuplicates();
+        }
+      }
+    },
+    removeDuplicates() {
+      this.playerlist = [...new Set(this.playerlist)];
+    }
+  },
+  mounted() {
+
+    let logLocation;
+    const client = localStorage.getItem('client');
+    if (client === null || client === "") {
+      this.invalid = true;
+      this.invalidMessage = "Please select a client in settings."
+    }
+
+    const apiKey = localStorage.getItem('apikey');
+
+    if (apiKey === null || apiKey === "") {
+      this.invalid = true;
+      this.invalidMessage = "Please enter an API Key in settings."
+    } else {
+      axios.get('https://api.hypixel.net/key?key=' + apiKey).then((response) => {
+        if (response.data.success === false) {
+          this.invalid = true;
+          this.invalidMessage = "Your API Key is invalid."
+        } else {
+          this.uuid = response.data.record.owner;
+        }
+      }).catch((error) => {
+        this.invalid = true;
+        this.invalidMessage = "Your API Key is invalid."
+      });
+    }
+
+    if (this.invalid === true) {
+      return
+    }
+
+    const username = require('os').userInfo().username;
+    if (client === 'vanilla') {
+      logLocation = `C:\\Users\\${username}\\AppData\\Roaming\\.minecraft\\logs\\latest.log`;
+    } else if (client === 'lunar') {
+      logLocation = `C:\\Users\\${username}\\.lunarclient\\offline\\multiver\\logs\\latest.log`;
+    } else if (client === 'badlion') {
+      const appdata = process.env.APPDATA || (process.platform === 'darwin' ? process.env.HOME + '/Library/Preferences' : process.env.HOME + "/.local/share")
+      logLocation = appdata + "\\.minecraft\\logs\\blclient\\minecraft\\latest.log";
+    }
+
+    const fileContents = fs.readFileSync(logLocation, "binary");
+
+    this.linecount = fileContents.split(/\r\n|\r|\n/).length;
+
+    fileWatcher.watch(logLocation, {usePolling: true}).on('all', (eventType, filename) => {
+      // set this.chat to the last 100 lines of the file
+      const fileContents = fs.readFileSync(logLocation, "binary");
+
+      if (fileContents.split("\n").length > this.linecount) {
+        const linediff = fileContents.split("\n").length - this.linecount;
+        this.linecount = fileContents.split("\n").length;
+        let newLines;
+        if (client === 'vanilla') {
+          newLines = fileContents.replaceAll(/§\w/g, "").replaceAll("\r", "").replaceAll(/\[[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\] \[Render thread\/INFO\]: \[System\] /g, "").split("\n").filter((line) => line.startsWith("[CHAT] ")).slice(-linediff).join("\n").replaceAll("[CHAT] ", "").split("\n");
+        } else {
+          newLines = fileContents.replaceAll(/§\w/g, "").replaceAll("\r", "").replaceAll(/\[[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\] \[Client thread\/INFO\]: /g, "").split("\n").filter((line) => line.startsWith("[CHAT] ")).slice(-linediff).join("\n").replaceAll("[CHAT] ", "").split("\n");
+        }
+
+        this.processNewLines(newLines);
+      }
+    });
+  }
+}
+</script>
+
+<style>
+</style>
