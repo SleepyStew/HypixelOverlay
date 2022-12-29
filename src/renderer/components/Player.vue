@@ -78,7 +78,7 @@ export default {
             this.uuid = data.data.player.id;
             return fetch(`https://api.hypixel.net/player?key=${apiKey}&uuid=${data.data.player.id}`);
           } else {
-            this.error = true;
+            this.nicked = true;
           }
         })
         .then(response => response.json())
