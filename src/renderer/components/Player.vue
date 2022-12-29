@@ -95,6 +95,7 @@ export default {
         })
         .catch(error => {
           console.error(error);
+          this.error = true;
           this.loading = false;
         })
         .finally(() => {
