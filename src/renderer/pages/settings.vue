@@ -37,7 +37,7 @@ export default {
       client: ''
     }
   },
-  mounted () {
+  created () {
     this.apikey = localStorage.getItem('apikey')
     this.client = localStorage.getItem('client')
   },

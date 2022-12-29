@@ -1,6 +1,6 @@
 <template>
   <div class="bg-[rgba(0,0,0,0.25)] h-[100vh] w-[100vw] rounded-md overflow-clip">
-    <navbar />
+    <Navbar />
     <nuxt />
   </div>
 </template>

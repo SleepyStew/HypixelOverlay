@@ -44,8 +44,9 @@ export default {
       BrowserWindow.getFocusedWindow().minimize();
     },
   },
-  mounted () {
+  created () {
     this.$router.afterEach((to, from) => {
+      console.log("test")
       this.settingsPage = to.path === '/settings'
     })
   }

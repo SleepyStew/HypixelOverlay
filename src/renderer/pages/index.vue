@@ -25,9 +25,10 @@
         </div>
       </div>
       <hr class="w-[100%]">
-      <Player v-for="player in playerlist" :name="player" :key="player" :owner="uuid"></Player>
+      <Player v-for="player in playerlist" :name="player" :key="player" :owner="uuid" :friends="friends"></Player>
     </div>
-    <div v-if="invalid" class="flex p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 w-[80%] dark:text-red-800"
+    <div v-if="invalid"
+         class="flex p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 w-[80%] dark:text-red-800"
          role="alert">
       <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20"
            xmlns="http://www.w3.org/2000/svg">
@@ -46,7 +47,6 @@
 
 <script>
 import Player from "~/components/Player.vue";
-import axios from "axios";
 
 const fileWatcher = require("chokidar");
 const fs = require('fs');
@@ -61,6 +61,8 @@ export default {
       invalid: false,
       invalidMessage: "Please edit your settings by clicking the icon in the top left.",
       uuid: null,
+      filewatcher: null,
+      friends: [],
     }
   },
   methods: {
@@ -81,6 +83,7 @@ export default {
         if (list[i].includes(" has joined (")) {
           this.playerlist.push(list[i].split(" has joined (")[0]);
           this.removeDuplicates();
+          console.log("Player joined: " + list[i].split(" has joined (")[0]);
         }
         if (list[i].includes(" has quit!")) {
           this.playerlist.splice(this.playerlist.indexOf(list[i].split(" has quit!")[0]), 1);
@@ -107,18 +110,31 @@ export default {
       this.invalid = true;
       this.invalidMessage = "Please enter an API Key in settings."
     } else {
-      axios.get('https://api.hypixel.net/key?key=' + apiKey).then((response) => {
-        if (response.data.success === false) {
+      fetch(`https://api.hypixel.net/key?key=${apiKey}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.success === false) {
+            this.invalid = true;
+            this.invalidMessage = "Your API Key is invalid.";
+          } else {
+            this.uuid = data.record.owner;
+            fetch(`https://api.hypixel.net/friends?key=${apiKey}&uuid=${this.uuid}`)
+              .then(response => response.json())
+              .then(data => {
+                for (let i = 0; i < data.records.length; i++) {
+                  this.friends.push(data.records[i].uuidReceiver);
+                }
+              })
+          }
+        })
+        .catch(error => {
+          console.error(error);
           this.invalid = true;
-          this.invalidMessage = "Your API Key is invalid."
-        } else {
-          this.uuid = response.data.record.owner;
-        }
-      }).catch((error) => {
-        this.invalid = true;
-        this.invalidMessage = "Your API Key is invalid."
-      });
+          this.invalidMessage = "Your API Key is invalid.";
+        });
     }
+
+    console.log("Client: " + client);
 
     if (this.invalid === true) {
       return
@@ -136,25 +152,30 @@ export default {
 
     const fileContents = fs.readFileSync(logLocation, "binary");
 
-    this.linecount = fileContents.split(/\r\n|\r|\n/).length;
+    this.linecount = fileContents.split('\n').length;
 
-    fileWatcher.watch(logLocation, {usePolling: true}).on('all', (eventType, filename) => {
-      // set this.chat to the last 100 lines of the file
-      const fileContents = fs.readFileSync(logLocation, "binary");
-
+    this.filewatcher = fileWatcher.watch(logLocation, {usePolling: true}).on('change', (eventType, filename) => {
+      //   // set this.chat to the last 100 lines of the file
+      let fileContents = fs.readFileSync(logLocation, "binary");
+      const fileContentsArray = fileContents.split('\n');
+      //
       if (fileContents.split("\n").length > this.linecount) {
-        const linediff = fileContents.split("\n").length - this.linecount;
-        this.linecount = fileContents.split("\n").length;
+        const linediff = fileContentsArray.length - this.linecount;
+        this.linecount = fileContentsArray.length;
         let newLines;
+        fileContents = fileContentsArray.slice(-linediff).join("\n");
         if (client === 'vanilla') {
-          newLines = fileContents.replaceAll(/§\w/g, "").replaceAll("\r", "").replaceAll(/\[[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\] \[Render thread\/INFO\]: \[System\] /g, "").split("\n").filter((line) => line.startsWith("[CHAT] ")).slice(-linediff).join("\n").replaceAll("[CHAT] ", "").split("\n");
+          newLines = fileContents.replaceAll(/§\w/g, "").replaceAll("\r", "").replaceAll(/\[[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\] \[Render thread\/INFO\]: \[System\] /g, "").split("\n").filter((line) => line.startsWith("[CHAT] ")).join("\n").replaceAll("[CHAT] ", "").split("\n");
         } else {
-          newLines = fileContents.replaceAll(/§\w/g, "").replaceAll("\r", "").replaceAll(/\[[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\] \[Client thread\/INFO\]: /g, "").split("\n").filter((line) => line.startsWith("[CHAT] ")).slice(-linediff).join("\n").replaceAll("[CHAT] ", "").split("\n");
+          newLines = fileContents.replaceAll(/§\w/g, "").replaceAll("\r", "").replaceAll(/\[[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\] \[Client thread\/INFO\]: /g, "").split("\n").filter((line) => line.startsWith("[CHAT] ")).join("\n").replaceAll("[CHAT] ", "").split("\n");
         }
 
         this.processNewLines(newLines);
       }
     });
+  },
+  beforeDestroy() {
+    this.filewatcher.close();
   }
 }
 </script>
