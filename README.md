@@ -3,6 +3,7 @@
 > Created by SleepyStew#7777
 
 ![](https://i.imgur.com/3sz3Kt9.png)
+The overlay works best on Lunar with Auto Who enabled.
 
 ## Building from the Source
 1. Download and unzip the project
