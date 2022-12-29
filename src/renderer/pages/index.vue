@@ -83,7 +83,6 @@ export default {
         if (list[i].includes(" has joined (")) {
           this.playerlist.push(list[i].split(" has joined (")[0]);
           this.removeDuplicates();
-          console.log("Player joined: " + list[i].split(" has joined (")[0]);
         }
         if (list[i].includes(" has quit!")) {
           this.playerlist.splice(this.playerlist.indexOf(list[i].split(" has quit!")[0]), 1);
@@ -133,8 +132,6 @@ export default {
           this.invalidMessage = "Your API Key is invalid.";
         });
     }
-
-    console.log("Client: " + client);
 
     if (this.invalid === true) {
       return

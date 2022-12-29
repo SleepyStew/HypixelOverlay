@@ -46,7 +46,6 @@ export default {
   },
   created () {
     this.$router.afterEach((to, from) => {
-      console.log("test")
       this.settingsPage = to.path === '/settings'
     })
   }
