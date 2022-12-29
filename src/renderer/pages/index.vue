@@ -122,6 +122,7 @@ export default {
               .then(data => {
                 for (let i = 0; i < data.records.length; i++) {
                   this.friends.push(data.records[i].uuidReceiver);
+                  this.friends.push(data.records[i].uuidSender);
                 }
               })
           }
