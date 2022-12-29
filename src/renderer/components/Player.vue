@@ -12,7 +12,7 @@
       {{ stats.wins || "0" }}
     </div>
     <div class="text-xl flex justify-center" v-if="stats.length !== 0">
-      {{ stats.wins_MURDER_CLASSIC || "0" }}
+      {{ stats.murderer_wins || "0" }}
     </div>
     <div class="text-xl flex justify-center" v-if="stats.length !== 0">
       {{ Math.round((stats.kills / stats.deaths) * 100) / 100 || "-" }}
