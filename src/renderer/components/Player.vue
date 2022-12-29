@@ -1,7 +1,7 @@
 <template>
   <div class="grid grid-cols-[12rem,6rem,12rem,6rem,6rem,10rem,8rem]">
     <div
-      :class="'overflow-x-clip text-xl flex items-center justify-center' + (error ? ' text-red-500' : '') + (nicked ? ' text-yellow-500' : '') + (owner.replaceAll('-', '') === uuid ? ' text-blue-500' : '') + (friends.includes(uuid) && owner.replaceAll('-', '') !== uuid ? ' text-green-500' : '')">
+      :class="'overflow-x-clip text-xl flex items-center justify-center' + (error ? ' text-red-500' : '') + (nicked ? ' text-yellow-500' : '') + (owner === uuid ? ' text-blue-500' : '') + (friends.includes(uuid) && owner !== uuid ? ' text-green-500' : '')">
       <div role="status" class="flex justify-center items-center" v-if="loading">
         <svg aria-hidden="true"
              :class="'mr-2 w-4 h-4 text-gray-300 animate-spin' + (!loadedUUID ? ' fill-green-600' : '') + (loadedUUID ? ' fill-blue-600' : '')"
