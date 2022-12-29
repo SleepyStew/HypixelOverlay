@@ -61,9 +61,13 @@ export default {
     },
     getStats() {
       const apiKey = localStorage.getItem('apikey');
-      fetch(`https://api.minetools.eu/uuid/${this.name}`)
+      fetch(`https://api.mojang.com/users/profiles/minecraft/${this.name}?`, {
+        // fix cors
+        mode: 'cors',
+      })
         .then(response => response.json())
         .then(data => {
+
           if (data.id) {
             this.loadedUUID = true;
             this.uuid = data.id;

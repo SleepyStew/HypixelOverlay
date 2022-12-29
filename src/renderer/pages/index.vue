@@ -157,17 +157,16 @@ export default {
       let fileContents = fs.readFileSync(logLocation, "binary");
       const fileContentsArray = fileContents.split('\n');
       //
-      if (fileContents.split("\n").length > this.linecount) {
+      if (fileContentsArray.length > this.linecount) {
         const linediff = fileContentsArray.length - this.linecount;
         this.linecount = fileContentsArray.length;
         let newLines;
-        fileContents = fileContentsArray.slice(-linediff).join("\n");
+        fileContents = fileContentsArray.slice(1).slice(-linediff - 1).join("\n");
         if (client === 'vanilla') {
           newLines = fileContents.replaceAll(/§\w/g, "").replaceAll("\r", "").replaceAll(/\[[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\] \[Render thread\/INFO\]: \[System\] /g, "").split("\n").filter((line) => line.startsWith("[CHAT] ")).join("\n").replaceAll("[CHAT] ", "").split("\n");
         } else {
           newLines = fileContents.replaceAll(/§\w/g, "").replaceAll("\r", "").replaceAll(/\[[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\] \[Client thread\/INFO\]: /g, "").split("\n").filter((line) => line.startsWith("[CHAT] ")).join("\n").replaceAll("[CHAT] ", "").split("\n");
         }
-
         this.processNewLines(newLines);
       }
     });
