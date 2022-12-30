@@ -1,6 +1,7 @@
 # Hypixel Overlay
 
 > Created by SleepyStew#7777
+> https://discord.gg/fXvGQPnHs5
 
 ![](https://i.imgur.com/q9T53Vl.png)
 The overlay works best on Lunar with Auto Who enabled.
