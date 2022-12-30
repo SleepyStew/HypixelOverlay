@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-[rgba(0,0,0,0.25)] h-[100vh] w-[100vw] rounded-md overflow-clip">
+  <div class="bg-[rgba(0,0,0,0.25)] h-[100vh] w-[100vw] rounded-md overflow-clip select-none">
     <Navbar />
     <nuxt />
   </div>

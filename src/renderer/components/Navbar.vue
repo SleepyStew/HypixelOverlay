@@ -1,6 +1,6 @@
 <template>
   <div class="bg-[rgba(0,0,0,0.15)] h-12 rounded-t-md navbar px-3 min-w-fit flex items-center">
-    <NuxtLink v-if="!settingsPage" to="/settings" class="text-xl pr-3 h-12 hover:cursor-pointer w-min nodrag font-semibold flex items-center justify-center">
+    <NuxtLink v-if="!settingsPage" to="/settings" class="text-xl mr-3 h-12 hover:cursor-pointer w-min nodrag font-semibold flex items-center justify-center">
       <font-awesome-icon icon="gear" />
     </NuxtLink>
     <NuxtLink v-if="settingsPage" to="/" class="text-xl pr-3 h-12 hover:cursor-pointer w-min nodrag font-semibold flex items-center justify-center">
