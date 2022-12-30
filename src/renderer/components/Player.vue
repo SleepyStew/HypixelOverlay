@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-[12rem,6rem,12rem,6rem,6rem,10rem,8rem]">
+  <div class="grid grid-cols-[13rem,6rem,12rem,6rem,6rem,10rem,8rem]">
     <div
       :class="'overflow-x-clip text-xl flex items-center justify-center' + (error ? ' text-red-500' : '') + (nicked ? ' text-yellow-500' : '') + (owner === uuid ? ' text-blue-500' : '') + (friends.includes(uuid) && owner !== uuid ? ' text-green-500' : '')">
       <div role="status" class="flex justify-center items-center" v-if="loading">
@@ -14,7 +14,8 @@
             fill="currentFill"/>
         </svg>
       </div>
-      <img :src="'https://mc-heads.net/avatar/' + name" class="w-5 h-5 mr-2" alt=""/>
+      <img :src="'https://mc-heads.net/avatar/' + name"
+           :class="'w-5 h-5 min-w-5 min-h-5 mr-2'  + (this.rankColour !== null ? ' ring-2 ' + this.rankColour : '')" alt=""/>
       {{ name }}
     </div>
     <div :class="winsColour(stats.wins) + ' text-xl flex justify-center'" v-if="stats !== null">
@@ -52,11 +53,13 @@ export default {
   data() {
     return {
       stats: null,
+      mmstats: null,
       error: false,
       nicked: false,
       loading: true,
       loadedUUID: false,
       uuid: null,
+      rankColour: null,
     }
   },
   methods: {
@@ -87,7 +90,9 @@ export default {
             if (data.player == null) {
               this.nicked = true;
             } else {
-              this.stats = data["player"]["stats"]["MurderMystery"]
+              this.mmstats = data["player"]["stats"]["MurderMystery"]
+              this.stats = data["player"]
+              this.getRankColour()
             }
           } else {
             this.error = true;
@@ -101,6 +106,22 @@ export default {
         .finally(() => {
           this.loading = false;
         });
+    },
+    getRankColour() {
+      if (this.nicked)
+        return this.rankColour = ''
+
+      if (this.stats.monthlyRankColor === "GOLD")
+        return this.rankColour = "ring-orange-400"
+      if (this.stats.newPackageRank === "MVP_PLUS")
+        return this.rankColour = 'ring-cyan-400'
+      if (this.stats.newPackageRank === "MVP")
+        return this.rankColour = 'ring-cyan-400'
+      if (this.stats.newPackageRank === "VIP_PLUS")
+        return this.rankColour = 'ring-green-500'
+      if (this.stats.newPackageRank === "VIP")
+        return this.rankColour = 'ring-green-500'
+      this.rankColour = 'ring-gray-500'
     }
   },
   created() {

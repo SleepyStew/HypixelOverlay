@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-center flex-col">
     <div class="p-3 overflow-clip">
-      <div class="grid grid-cols-[12rem,6rem,12rem,6rem,6rem,10rem,8rem]">
+      <div class="grid grid-cols-[13rem,6rem,12rem,6rem,6rem,10rem,8rem]">
         <div class="text-xl font-semibold flex justify-center">
           Name
         </div>
