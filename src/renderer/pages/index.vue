@@ -1,30 +1,29 @@
 <template>
   <div class="flex items-center flex-col">
-    <div class="p-3 overflow-clip">
+    <div class="p-3 pt-2 overflow-clip">
       <div class="grid grid-cols-[13rem,6rem,12rem,6rem,6rem,10rem,8rem]">
         <div class="text-xl font-semibold flex justify-center">
           Name
         </div>
-        <div class="text-xl font-semibold flex justify-center">
+        <div class="text-xl font-semibold flex justify-center drop-shadow-xl">
           Wins
         </div>
-        <div class="text-xl font-semibold flex justify-center">
+        <div class="text-xl font-semibold flex justify-center drop-shadow-xl">
           Murderer Wins
         </div>
-        <div class="text-xl font-semibold flex justify-center">
+        <div class="text-xl font-semibold flex justify-center drop-shadow-xl">
           KDR
         </div>
-        <div class="text-xl font-semibold flex justify-center">
+        <div class="text-xl font-semibold flex justify-center drop-shadow-xl">
           Kills
         </div>
-        <div class="text-xl font-semibold flex justify-center">
+        <div class="text-xl font-semibold flex justify-center drop-shadow-xl">
           Detective Wins
         </div>
-        <div class="text-xl font-semibold flex justify-center">
+        <div class="text-xl font-semibold flex justify-center drop-shadow-xl">
           Deaths
         </div>
       </div>
-      <hr class="w-[100%]">
       <Player v-for="player in playerlist" :name="player" :key="player" :owner="uuid" :friends="friends"></Player>
     </div>
     <div v-if="invalid"
@@ -124,6 +123,12 @@ export default {
                   this.friends.push(data.records[i].uuidReceiver);
                   this.friends.push(data.records[i].uuidSender);
                 }
+                fetch(`https://playerdb.co/api/player/minecraft/${this.uuid}`)
+                  .then(response => response.json())
+                  .then(data => {
+                    console.log(data.data)
+                    this.playerlist.push(data.data.player.username);
+                  })
               })
           }
         })
@@ -176,6 +181,5 @@ export default {
   }
 }
 </script>
-
 <style>
 </style>

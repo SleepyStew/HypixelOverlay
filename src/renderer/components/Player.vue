@@ -1,5 +1,8 @@
 <template>
-  <div class="grid grid-cols-[13rem,6rem,12rem,6rem,6rem,10rem,8rem]">
+  <div>
+  <div class="w-[100%] border-b-2 border-[rgba(255,255,255,0.1)]">
+  </div>
+  <div class="grid grid-cols-[13rem,6rem,12rem,6rem,6rem,10rem,8rem] h-7">
     <div
       :class="'overflow-x-clip text-xl flex items-center justify-center' + (error ? ' text-red-500' : '') + (nicked ? ' text-yellow-500' : '') + (owner === uuid ? ' text-blue-500' : '') + (friends.includes(uuid) && owner !== uuid ? ' text-green-500' : '')">
       <div role="status" class="flex justify-center items-center" v-if="loading">
@@ -16,26 +19,29 @@
       </div>
       <img :src="'https://mc-heads.net/avatar/' + name"
            :class="'w-5 h-5 min-w-5 min-h-5 mr-2'  + (this.rankColour !== null ? ' ring-2 ' + this.rankColour : '')" alt=""/>
-      {{ name }}
+      <div class="drop-shadow-xl">
+        {{ name }}
+      </div>
     </div>
     <div :class="winsColour(mmstats.wins) + ' text-xl flex justify-center'" v-if="mmstats !== null">
       {{ mmstats.wins || "0" }}
     </div>
-    <div class="text-xl flex justify-center" v-if="mmstats !== null">
+    <div class="text-xl flex justify-center drop-shadow-xl" v-if="mmstats !== null">
       {{ mmstats.murderer_wins || "0" }}
     </div>
-    <div class="text-xl flex justify-center" v-if="mmstats !== null">
+    <div class="text-xl flex justify-center drop-shadow-xl" v-if="mmstats !== null">
       {{ Math.round((mmstats.kills / mmstats.deaths) * 100) / 100 || "-" }}
     </div>
-    <div class="text-xl flex justify-center" v-if="mmstats !== null">
+    <div class="text-xl flex justify-center drop-shadow-xl" v-if="mmstats !== null">
       {{ mmstats.kills || "0" }}
     </div>
-    <div class="text-xl flex justify-center" v-if="mmstats !== null">
+    <div class="text-xl flex justify-center drop-shadow-xl" v-if="mmstats !== null">
       {{ mmstats.detective_wins || "0" }}
     </div>
-    <div class="text-xl flex justify-center" v-if="mmstats !== null">
+    <div class="text-xl flex justify-center drop-shadow-xl" v-if="mmstats !== null">
       {{ mmstats.deaths || "0" }}
     </div>
+  </div>
   </div>
 </template>
 
@@ -73,6 +79,7 @@ export default {
     },
     getStats() {
       const apiKey = localStorage.getItem('apikey');
+      console.log("Getting UUID for: " + this.name);
       fetch(`https://playerdb.co/api/player/minecraft/${this.name}`)
         .then(response => response.json())
         .then(data => {
