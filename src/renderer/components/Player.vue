@@ -18,23 +18,23 @@
            :class="'w-5 h-5 min-w-5 min-h-5 mr-2'  + (this.rankColour !== null ? ' ring-2 ' + this.rankColour : '')" alt=""/>
       {{ name }}
     </div>
-    <div :class="winsColour(stats.wins) + ' text-xl flex justify-center'" v-if="stats !== null">
-      {{ stats.wins || "0" }}
+    <div :class="winsColour(mmstats.wins) + ' text-xl flex justify-center'" v-if="mmstats !== null">
+      {{ mmstats.wins || "0" }}
     </div>
-    <div class="text-xl flex justify-center" v-if="stats !== null">
-      {{ stats.murderer_wins || "0" }}
+    <div class="text-xl flex justify-center" v-if="mmstats !== null">
+      {{ mmstats.murderer_wins || "0" }}
     </div>
-    <div class="text-xl flex justify-center" v-if="stats !== null">
-      {{ Math.round((stats.kills / stats.deaths) * 100) / 100 || "-" }}
+    <div class="text-xl flex justify-center" v-if="mmstats !== null">
+      {{ Math.round((mmstats.kills / mmstats.deaths) * 100) / 100 || "-" }}
     </div>
-    <div class="text-xl flex justify-center" v-if="stats !== null">
-      {{ stats.kills || "0" }}
+    <div class="text-xl flex justify-center" v-if="mmstats !== null">
+      {{ mmstats.kills || "0" }}
     </div>
-    <div class="text-xl flex justify-center" v-if="stats !== null">
-      {{ stats.detective_wins || "0" }}
+    <div class="text-xl flex justify-center" v-if="mmstats !== null">
+      {{ mmstats.detective_wins || "0" }}
     </div>
-    <div class="text-xl flex justify-center" v-if="stats !== null">
-      {{ stats.deaths || "0" }}
+    <div class="text-xl flex justify-center" v-if="mmstats !== null">
+      {{ mmstats.deaths || "0" }}
     </div>
   </div>
 </template>
