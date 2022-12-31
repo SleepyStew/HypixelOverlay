@@ -8,7 +8,7 @@ The overlay works best on Lunar with Auto Who enabled.
 
 ## Usage
 
-To run this program, you will need to first download the [latest release](#download).
+To run this program, you will need to first download the [latest release](https://github.com/SleepyStew/HypixelOverlay/releases).
 
 Then run the downloaded .exe file that will install and start the overlay.
 It should appear in start menu as an installed app for future use.
