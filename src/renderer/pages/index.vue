@@ -76,7 +76,7 @@ export default {
         if (list[i].includes(":")) {
           continue;
         }
-        if (list[i].startsWith("Sending you to mini")) {
+        if (list[i] === "       ") {
           this.playerlist = [];
         }
         if (list[i].includes(" has joined (")) {

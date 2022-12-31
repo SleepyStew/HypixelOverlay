@@ -23,22 +23,22 @@
         {{ name }}
       </div>
     </div>
-    <div :class="winsColour(mmstats.wins) + ' text-xl flex justify-center'" v-if="mmstats !== null">
+    <div :class="winsColour(mmstats.wins) + ' text-xl flex justify-center'" v-if="mmstatsNotNull()">
       {{ mmstats.wins || "0" }}
     </div>
-    <div class="text-xl flex justify-center drop-shadow-xl" v-if="mmstats !== null">
+    <div class="text-xl flex justify-center drop-shadow-xl" v-if="mmstatsNotNull()">
       {{ mmstats.murderer_wins || "0" }}
     </div>
-    <div class="text-xl flex justify-center drop-shadow-xl" v-if="mmstats !== null">
+    <div class="text-xl flex justify-center drop-shadow-xl" v-if="mmstatsNotNull()">
       {{ Math.round((mmstats.kills / mmstats.deaths) * 100) / 100 || "-" }}
     </div>
-    <div class="text-xl flex justify-center drop-shadow-xl" v-if="mmstats !== null">
+    <div class="text-xl flex justify-center drop-shadow-xl" v-if="mmstatsNotNull()">
       {{ mmstats.kills || "0" }}
     </div>
-    <div class="text-xl flex justify-center drop-shadow-xl" v-if="mmstats !== null">
+    <div class="text-xl flex justify-center drop-shadow-xl" v-if="mmstatsNotNull()">
       {{ mmstats.detective_wins || "0" }}
     </div>
-    <div class="text-xl flex justify-center drop-shadow-xl" v-if="mmstats !== null">
+    <div class="text-xl flex justify-center drop-shadow-xl" v-if="mmstatsNotNull()">
       {{ mmstats.deaths || "0" }}
     </div>
   </div>
@@ -132,6 +132,9 @@ export default {
       if (this.stats.newPackageRank === "VIP")
         return this.rankColour = 'ring-green-500'
       this.rankColour = 'ring-gray-500'
+    },
+    mmstatsNotNull() {
+      return this.mmstats !== null && this.mmstats !== undefined
     }
   },
   created() {
