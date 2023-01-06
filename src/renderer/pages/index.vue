@@ -167,7 +167,7 @@ export default {
         this.linecount = fileContentsArray.length;
         let newLines;
         fileContents = fileContentsArray.slice(1).slice(-linediff - 1).join("\n");
-        if (client === 'vanilla') {
+        if (fileContents.includes("[Render thread\\/INFO\\]")) {
           newLines = fileContents.replaceAll(/§\w/g, "").replaceAll("\r", "").replaceAll(/\[[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\] \[Render thread\/INFO\]: \[System\] /g, "").split("\n").filter((line) => line.startsWith("[CHAT] ")).join("\n").replaceAll("[CHAT] ", "").split("\n");
         } else {
           newLines = fileContents.replaceAll(/§\w/g, "").replaceAll("\r", "").replaceAll(/\[[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\] \[Client thread\/INFO\]: /g, "").split("\n").filter((line) => line.startsWith("[CHAT] ")).join("\n").replaceAll("[CHAT] ", "").split("\n");
